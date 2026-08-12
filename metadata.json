@@ -1,0 +1,6 @@
+{
+  "name": "Suika Fruit Merge Game",
+  "description": "A cute, physics-based fruit drop and merge puzzle game inspired by Suika Game with sound effects, power-ups, and evolutionary fruit chain.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
