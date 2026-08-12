@@ -16,12 +16,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Locate Project Root and Build
+      - name: Fix Index HTML Path and Build
         run: |
-          # Find where package.json is located
-          PROJECT_DIR=$(dirname $(find . -name "package.json" -not -path "*/node_modules/*"))
-          echo "Found project directory at: $PROJECT_DIR"
+          # Find project root where index.html is located
+          PROJECT_DIR=$(dirname $(find . -name "index.html" -not -path "*/node_modules/*"))
+          echo "Found project at: $PROJECT_DIR"
           cd "$PROJECT_DIR"
+          
+          # Automatically fix the main.tsx path in index.html if it has leading slash/dot
+          sed -i 's|src="/src/|src="./src/|g' index.html
+          sed -i 's|src="/main.tsx"|src="./src/main.tsx"|g' index.html
           
           # Install dependencies and build
           rm -f package-lock.json bun.lock
@@ -31,7 +35,7 @@ jobs:
 
       - name: Fix Gradle Wrapper & Build APK
         run: |
-          PROJECT_DIR=$(dirname $(find . -name "package.json" -not -path "*/node_modules/*"))
+          PROJECT_DIR=$(dirname $(find . -name "index.html" -not -path "*/node_modules/*"))
           cd "$PROJECT_DIR/android"
           gradle wrapper --gradle-version 8.5
           chmod +x gradlew
