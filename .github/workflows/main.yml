@@ -16,31 +16,23 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Dependencies
+      - name: Locate Project Root and Build
         run: |
+          # Find where package.json is located
+          PROJECT_DIR=$(dirname $(find . -name "package.json" -not -path "*/node_modules/*"))
+          echo "Found project directory at: $PROJECT_DIR"
+          cd "$PROJECT_DIR"
+          
+          # Install dependencies and build
           rm -f package-lock.json bun.lock
           npm install --force
-
-      - name: Build Web App
-        run: |
-          if [ -d "project" ]; then
-            cd project
-          fi
           npm run build
-
-      - name: Sync Capacitor
-        run: |
-          if [ -d "project" ]; then
-            cd project
-          fi
           npx cap sync android
 
       - name: Fix Gradle Wrapper & Build APK
         run: |
-          if [ -d "project" ]; then
-            cd project
-          fi
-          cd android
+          PROJECT_DIR=$(dirname $(find . -name "package.json" -not -path "*/node_modules/*"))
+          cd "$PROJECT_DIR/android"
           gradle wrapper --gradle-version 8.5
           chmod +x gradlew
           ./gradlew assembleDebug
