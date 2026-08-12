@@ -22,13 +22,24 @@ jobs:
           npm install --force
 
       - name: Build Web App
-        run: npm run build
+        run: |
+          if [ -d "project" ]; then
+            cd project
+          fi
+          npm run build
 
       - name: Sync Capacitor
-        run: npx cap sync android
+        run: |
+          if [ -d "project" ]; then
+            cd project
+          fi
+          npx cap sync android
 
       - name: Fix Gradle Wrapper & Build APK
         run: |
+          if [ -d "project" ]; then
+            cd project
+          fi
           cd android
           gradle wrapper --gradle-version 8.5
           chmod +x gradlew
@@ -38,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: '**/android/app/build/outputs/apk/debug/app-debug.apk'
